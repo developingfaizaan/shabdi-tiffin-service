@@ -1,22 +1,16 @@
 {
   "version": 2,
-  "name": "tiffin-service",
   "builds": [
     {
-      "src": "./server.js",
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/server.js"
+      "src": "/routes/*",
+      "dest": "server.js"
     }
   ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
-  ]
+  "public": "./public"
 }

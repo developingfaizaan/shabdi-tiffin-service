@@ -1,7 +1,7 @@
 {
   "name": "shabdi-tiffin-service",
   "version": "1.0.0",
-  "description": "This is our relatime pizza app",
+  "description": "This is a tiffin service app",
   "main": "index.js",
   "author": "Shabdi Brothers",
   "scripts": {
