@@ -1,13 +1,16 @@
 <section class="cart py-16">
     <% if(session.cart) { %>
     <div class="order container mx-auto xl:w-1/2">
-        <div class="flex items-center border-b border-gray-300 pb-4">
-            <img src="/img/cart-black.png" alt="">
-            <h1 class="font-bold ml-4 text-2xl">Order summary</h1>
+        <div class="flex items-center justify-between border-b border-gray-300 pb-4">
+            <div class="flex items-center">    
+                <img src="/img/cart-black.png" alt="">
+                <h1 class="font-bold ml-4 text-2xl">Order summary</h1>
+            </div>
+            <button id="empty-cart" onclick="emptyCart()" class="btn bg-red-100 text-red-500 p-2 rounded font-bold">Empty cart</button>
         </div>
         <div class="pizza-list">
             <% for(let pizza of Object.values(session.cart.items)) { %>
-            <div class="flex items-center my-8">
+            <div class="cart-items flex items-center my-8" id="item-<%= pizza.item._id %>">
                 <img class="w-24" src="/img/menu/<%= pizza.item.image %>" alt="">
                 <div class="flex-1 ml-4">
                     <h1><%= pizza.item.name %></h1>
@@ -15,6 +18,10 @@
                 </div>
                 <span class="flex-1"><%= pizza.qty %> Pcs</span>
                 <span class="font-bold text-lg">₹ <%= pizza.item.price * pizza.qty %></span>
+                <!-- <button class="font-bold text-red-500 ml-5">Remove</button> -->
+                <button title="remove" class="font-bold text-red-500 ml-5" onclick="removeItem('<%= pizza.item._id %>')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f56565" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
             </div>
             <%  } %>
 
@@ -65,3 +72,58 @@
     </div>
     <% } %>
 </section>
+
+<script>
+    function removeItem(itemId) {
+      fetch('/cart/' + itemId, {
+        method: 'DELETE',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          const item = document.getElementById('item-' + itemId);
+          item.parentNode.removeChild(item);
+
+        //   console.log(data);
+          const amt = document.querySelector(".amount");
+          amt.textContent = data.totalPrice;
+          //   console.log(item);
+        }
+        console.log("Removed");
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function emptyCart() {
+      fetch('/empty/cart/', {
+        method: 'DELETE',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+            if (data) {
+                const cartItems = document.querySelectorAll(".cart-items");
+                cartItems.forEach(item => item.remove());
+                // console.log("eempty done!");
+                const amt = document.querySelector(".amount");
+                amt.textContent = data.totalPrice;
+
+            }
+        //   const item = document.getElementById('item-' + itemId);
+        //   item.parentNode.removeChild(item);
+
+        // //   console.log(data);
+        //   const amt = document.querySelector(".amount");
+        //   amt.textContent = data.totalPrice;
+          //   console.log(item);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    </script>
+    
